@@ -1,6 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Hook</string>
 
+    <string name="app_name">Hook</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_browse_picture">BrowsePictureActivity</string>
+    <string name="title_activity_ip_address">ipAddressActivity</string>
+    <string name="ip_cellphone_string">IP of the cellphone</string>
+    <string name="ip_server_string">IP of the server</string>
+    <string name="ip_introduce">Please introduce your server IP in the corresponding field</string>
+    <string name="connect_button">Connect</string>
+    <string name="connection_success">Successful connection</string>
+    <string name="port_server_string">Port</string>
+    <string name="ip_toast_error">You did not enter a valid IP</string>
+    <string name="port_toast_error">You did not enter a valid Port</string>
+    <string name="successful_connection">Successfully connected to:</string>
+    <string name="port">Port:</string>
+    <string name="ip">IP:</string>
+
 </resources>

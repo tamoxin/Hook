@@ -1,32 +1,38 @@
 package com.example.sweg.hook;
 
-import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
 
-public class CanvasActivity extends ActionBarActivity {
+public class BrowseImageActivity extends ActionBarActivity {
+
+    //Variables to communicate thorough classes
+    public Bundle ipRecover;
+    public String ipServer;
+    public int portServer;
+    //Variables for sending data
+    private imageSender sender;
+    private String degrees,accelerometer;
+    private String[] dataPackage;
+    private Thread senderThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_canvas);
+        setContentView(R.layout.activity_browse_picture);
 
-        Intent intent = new Intent(this, ipAddressActivity.class);
-        //This two methods control the stack of navigation obligating the user to
-        // setup the UDP connection before selecting an image to send.
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
+        ipRecover = getIntent().getExtras();
+        ipServer = ipRecover.getString("ipServer");
+        portServer = Integer.parseInt(ipRecover.getString("ipPort"));
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_canvas, menu);
+        getMenuInflater().inflate(R.menu.menu_browse_picture, menu);
         return true;
     }
 
