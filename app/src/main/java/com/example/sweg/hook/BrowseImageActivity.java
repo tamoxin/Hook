@@ -1,7 +1,7 @@
 package com.example.sweg.hook;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -13,7 +13,7 @@ public class BrowseImageActivity extends ActionBarActivity {
     public String ipServer;
     public int portServer;
     //Variables for sending data
-    private imageSender sender;
+    private ImageSender sender;
     private String degrees,accelerometer;
     private String[] dataPackage;
     private Thread senderThread;

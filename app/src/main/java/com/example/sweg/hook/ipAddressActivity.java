@@ -3,8 +3,8 @@ package com.example.sweg.hook;
 import android.content.Intent;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.text.format.Formatter;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,7 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-public class ipAddressActivity extends ActionBarActivity {
+public class IpAddressActivity extends ActionBarActivity {
 
     TextView cellphoneIP;
     EditText serverIP, serverPort;
@@ -49,7 +49,7 @@ public class ipAddressActivity extends ActionBarActivity {
             return;
         }
 
-        Intent shareContent = new Intent(this, BrowseImageActivity.class);
+        Intent shareContent = new Intent(this, CanvasActivity.class);
         shareContent.putExtra("ipServer", serverIPString);
         shareContent.putExtra("ipPort", serverPortString);
         startActivity(shareContent);

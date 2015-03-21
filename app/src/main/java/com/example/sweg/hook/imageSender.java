@@ -1,15 +1,16 @@
 package com.example.sweg.hook;
 
 import android.util.Log;
+
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-public class imageSender implements Runnable{
+public class ImageSender implements Runnable{
     String ip, degrees, accelerometer, direction;
     int port;
 
-    public imageSender(String ip, int port)
+    public ImageSender(String ip, int port)
     {
         this.ip = ip;
         this.port = port;
