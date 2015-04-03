@@ -25,5 +25,8 @@
         <item>Take Picture</item>
         <item>Choose Picture</item>
     </string-array>
+    <string-array name="settings_choices">
+        <item>UDP Settings</item>
+    </string-array>
 
 </resources>

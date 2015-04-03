@@ -143,6 +143,18 @@ public class CanvasActivity extends ActionBarActivity {
         }
     }
 
+    protected DialogInterface.OnClickListener settingsDialogListener =
+            new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    switch(which){
+                        case 0:
+                            Intent intent = new Intent(CanvasActivity.this, IpAddressActivity.class);
+                            startActivity(intent);
+                    }
+                }
+            };
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -156,17 +168,22 @@ public class CanvasActivity extends ActionBarActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        AlertDialog.Builder builder;
+        AlertDialog dialog;
 
         switch(id){
             case R.id.action_camera:
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder = new AlertDialog.Builder(this);
                 builder.setItems(R.array.camera_choices, mDialogListener);
-                AlertDialog dialog = builder.create();
+                dialog = builder.create();
                 dialog.show();
             case R.id.action_share:
 
             case R.id.action_settings:
-                return true;
+                builder = new AlertDialog.Builder(this);
+                builder.setItems(R.array.settings_choices, settingsDialogListener);
+                dialog = builder.create();
+                dialog.show();
         }
 
         return super.onOptionsItemSelected(item);

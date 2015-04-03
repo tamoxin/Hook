@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Hook.iml" filepath="$PROJECT_DIR$/Hook.iml" />
       <module fileurl="file://$PROJECT_DIR$/Send-a-canvas.iml" filepath="$PROJECT_DIR$/Send-a-canvas.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
