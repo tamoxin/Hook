@@ -29,7 +29,7 @@ public class CanvasActivity extends ActionBarActivity {
     static final int takePhotoRequest = 0;
     static final int pickPhotoRequest = 1;
     static final int mediaTypeImage = 3;
-    protected Uri mediaUri;
+    protected Uri mediaUri = null;
     protected String fileName;
     protected String ip;
     protected int port;
@@ -43,7 +43,7 @@ public class CanvasActivity extends ActionBarActivity {
     }
 
     @Override
-    //This method puts the pictures taken in the android gallery
+    // This method puts the pictures taken in the android gallery
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -212,12 +212,35 @@ public class CanvasActivity extends ActionBarActivity {
     }
 
     public void shareViaUdpOnClick(MenuItem item) {
+
+        //Get information of the receiver
         Intent serverData = getIntent();
         ip = serverData.getStringExtra("ipServer");
         port = serverData.getIntExtra("ipPort", -1);
-        ImageProcessor processor = new ImageProcessor(fileName, mediaUri);
-        Toast.makeText(getApplicationContext(),
-                getString(R.string.sending_picture_label), Toast.LENGTH_LONG).show();
+
+        if(mediaUri == null){
+            Toast.makeText(getApplicationContext(), getString(R.string.uri_error_null), Toast.LENGTH_SHORT).show();
+        }else{
+
+            if(port == -1 || ip.equals(null)){
+                Intent intent = new Intent(getApplicationContext(), IpAddressActivity.class);
+                startActivity(intent);
+            }else{
+                // Prepare the image to be sent
+                ImageProcessor processor = new ImageProcessor(fileName, mediaUri);
+                processor.imageToByteArray();
+
+                // Prepare the instructions to send the image
+                byte[] bytes = processor.getByteArray();
+
+                // Send the image
+                ImageSender sender = new ImageSender(ip, port, bytes);
+                sender.run();
+
+                Toast.makeText(getApplicationContext(),
+                        getString(R.string.sending_picture_label), Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     public void shareViaBluetooth(MenuItem item) {

@@ -7,28 +7,17 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 
 public class ImageSender implements Runnable{
-    String ip, degrees, accelerometer, direction;
+    String ip;
     int port;
+    byte[] bytes;
 
-    public ImageSender(String ip, int port)
+    public ImageSender(String ip, int port, byte[] bytes)
     {
         this.ip = ip;
         this.port = port;
+        this.bytes = bytes;
         Log.d("ip_Sender", this.ip);
         Log.d("port_Sender", String.valueOf(this.port));
-    }
-
-    public void setMessage()
-    {
-        direction = ip+"-----"+port;
-    }
-
-    public void setMessage(String[] dataPackage)
-    {
-        this.degrees = dataPackage[0];
-        accelerometer = dataPackage[1];
-        direction = degrees + accelerometer;
-        Log.d("Direction:", degrees+"----------"+accelerometer);
     }
 
     @Override
@@ -42,13 +31,10 @@ public class ImageSender implements Runnable{
                         /* Create new UDP-Socket */
             DatagramSocket socket = new DatagramSocket();
 
-                        /* Prepare some data to be sent. */
-            byte[] buffer = (direction).getBytes();
-
                         /* Create UDP-packet with
                          * data & destination(url+port) */
-            DatagramPacket packetDirection = new DatagramPacket(buffer, buffer.length, serverAddress, port);
-            Log.d("UDP", "C: Sending: '" + new String(buffer) + "'");
+            DatagramPacket packetDirection = new DatagramPacket(bytes, bytes.length, serverAddress, port);
+            Log.d("UDP", "C: Sending: '" + new String(bytes) + "'");
 
                         /* Send out the packet */
             socket.send(packetDirection);

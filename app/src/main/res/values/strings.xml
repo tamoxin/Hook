@@ -29,6 +29,7 @@
     <string name="sending_picture_label">Sending your picture</string>
     <string name="send_via_udp_label">Send via UDP</string>
     <string name="send_via_bluetooth_label">Send via bluetooth</string>
+    <string name="uri_error_null">First select or take a picture</string>
     <string-array name="camera_choices">
         <item>Take Picture</item>
         <item>Choose Picture</item>
