@@ -11,8 +11,12 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
+
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -21,24 +25,21 @@ import java.util.Locale;
 
 public class CanvasActivity extends ActionBarActivity {
 
-    //Quité el public a cada una
     static final String TAG = CanvasActivity.class.getSimpleName();
     static final int takePhotoRequest = 0;
     static final int pickPhotoRequest = 1;
     static final int mediaTypeImage = 3;
     protected Uri mediaUri;
+    protected String fileName;
+    protected String ip;
+    protected int port;
+    protected ImageView selectedImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_canvas);
-
-        /*Intent intent = new Intent(this, IpAddressActivity.class);
-        //This two methods control the stack of navigation obligating the user to
-        //setup the UDP connection before selecting an image to send.
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);*/
+        selectedImage = (ImageView) findViewById(R.id.imageSelected);
     }
 
     @Override
@@ -60,6 +61,15 @@ public class CanvasActivity extends ActionBarActivity {
                 mediaScanIntent.setData(mediaUri);
                 sendBroadcast(mediaScanIntent);
             }
+
+            // This method flush the ImageView cache.
+            selectedImage.setImageURI(null);
+
+            // This is the equivalent of selectImage.setImageURI(mediaUri);
+            // but if done that way, bitmap too large to be uploaded into a texture
+            // error appears.
+            Picasso.with(getApplicationContext()).
+                    load(mediaUri).fit().centerInside().into(selectedImage);
         }
         else if (resultCode != RESULT_CANCELED) {
             Toast.makeText(this, R.string.general_error, Toast.LENGTH_LONG).show();
@@ -126,7 +136,8 @@ public class CanvasActivity extends ActionBarActivity {
                             mediaUri = getOutputMediaFileUri(mediaTypeImage);
                             if (mediaUri == null) {
                                 //Display an error
-                                Toast.makeText(CanvasActivity.this, R.string.error_external_store, Toast.LENGTH_LONG).show();
+                                Toast.makeText(CanvasActivity.this,
+                                        R.string.error_external_store, Toast.LENGTH_LONG).show();
                             } else {
                                 takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, mediaUri);
                                 //The starActivityForResult starts the camera app and wait
@@ -172,7 +183,9 @@ public class CanvasActivity extends ActionBarActivity {
                         else
                             return null;
 
+                        Log.d("File name", mediaFile.getName());
                         Log.d(TAG, "File: " + Uri.fromFile(mediaFile));
+                        fileName = mediaFile.getName();
                         //5. Return the file's URI
                         return Uri.fromFile(mediaFile);
                     }
@@ -182,7 +195,6 @@ public class CanvasActivity extends ActionBarActivity {
 
                 private boolean isExternalStorageAvailable(){
                     String state = Environment.getExternalStorageState();
-
                     if (state.equals(Environment.MEDIA_MOUNTED))
                         return true;
                     else
@@ -200,6 +212,10 @@ public class CanvasActivity extends ActionBarActivity {
     }
 
     public void shareViaUdpOnClick(MenuItem item) {
+        Intent serverData = getIntent();
+        ip = serverData.getStringExtra("ipServer");
+        port = serverData.getIntExtra("ipPort", -1);
+        ImageProcessor processor = new ImageProcessor(fileName, mediaUri);
         Toast.makeText(getApplicationContext(),
                 getString(R.string.sending_picture_label), Toast.LENGTH_LONG).show();
     }

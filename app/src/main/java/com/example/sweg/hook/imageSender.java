@@ -25,7 +25,7 @@ public class ImageSender implements Runnable{
 
     public void setMessage(String[] dataPackage)
     {
-        degrees = dataPackage[0];
+        this.degrees = dataPackage[0];
         accelerometer = dataPackage[1];
         direction = degrees + accelerometer;
         Log.d("Direction:", degrees+"----------"+accelerometer);
