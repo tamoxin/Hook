@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/share_udp"
+        android:title="@string/send_via_udp_label"
+        android:onClick="shareViaUdpOnClick"/>
+
+    <item
+        android:id="@+id/share_bluetooth"
+        android:title="@string/send_via_bluetooth_label"
+        android:onClick="shareViaBluetooth"/>
+
+</menu>

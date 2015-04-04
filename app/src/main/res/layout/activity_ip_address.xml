@@ -40,7 +40,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/connect_button"
+        android:text="@string/set_button"
         android:id="@+id/button_connect"
         android:onClick="onClick"
         android:layout_alignParentBottom="true"

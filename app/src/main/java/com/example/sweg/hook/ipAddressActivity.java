@@ -7,8 +7,6 @@ import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.format.Formatter;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -62,34 +60,14 @@ public class IpAddressActivity extends ActionBarActivity {
         editor.putString("ip", serverIpString);
         editor.putString("port", serverPortString);
         editor.apply();
+        Toast.makeText(this, getString(R.string.udp_connection_message_label), Toast.LENGTH_SHORT).show();
 
         Intent shareContent = new Intent(this, CanvasActivity.class);
         shareContent.putExtra("ipServer", serverIpString);
         shareContent.putExtra("ipPort", serverPortString);
+        shareContent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        shareContent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(shareContent);
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_ip_address, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
 }

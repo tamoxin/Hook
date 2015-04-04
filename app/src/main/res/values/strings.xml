@@ -9,7 +9,7 @@
     <string name="ip_cellphone_string">IP of the cellphone</string>
     <string name="ip_server_string">IP of the server</string>
     <string name="ip_introduce">Please introduce your server IP in the corresponding field</string>
-    <string name="connect_button">Connect</string>
+    <string name="set_button">Set</string>
     <string name="connection_success">Successful connection</string>
     <string name="port_server_string">Port</string>
     <string name="ip_toast_error">You did not enter a valid IP</string>
@@ -21,12 +21,17 @@
     <string name="menu_share_label">Share</string>
     <string name="error_external_store">There was an error with your device\'s external storage</string>
     <string name="general_error">Sorry, there was an error!</string>
+    <string name="menu_overflow_label">Overflow</string>
+    <string name="menu_about_label">About</string>
+    <string name="menu_udp_label">UDP Settings</string>
+    <string name="udp_connection_message_label">Connection settings has been updated</string>
+    <string name="menu_about_message_label">Created by Marco Carrizales\nVersion 0.0.3</string>
+    <string name="sending_picture_label">Sending your picture</string>
+    <string name="send_via_udp_label">Send via UDP</string>
+    <string name="send_via_bluetooth_label">Send via bluetooth</string>
     <string-array name="camera_choices">
         <item>Take Picture</item>
         <item>Choose Picture</item>
-    </string-array>
-    <string-array name="settings_choices">
-        <item>UDP Settings</item>
     </string-array>
 
 </resources>
