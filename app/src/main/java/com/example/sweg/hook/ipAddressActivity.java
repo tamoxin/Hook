@@ -18,7 +18,7 @@ public class IpAddressActivity extends ActionBarActivity {
     TextView cellphoneIP;
     EditText serverIp, serverPort;
     String serverIpString;
-    int serverPortString;
+    String serverPortString;
     SharedPreferences savedValues;
 
     @Override
@@ -53,13 +53,13 @@ public class IpAddressActivity extends ActionBarActivity {
         }
 
         serverIpString = serverIp.getText().toString();
-        serverPortString = Integer.parseInt(serverPort.getText().toString());
+        serverPortString = serverPort.getText().toString();
 
         //This part saves the IP and Port in cache so the user does not have to write them
         //every time she wants to send an image
         SharedPreferences.Editor editor = savedValues.edit();
         editor.putString("ip", serverIpString);
-        editor.putInt("port", serverPortString);
+        editor.putString("port", serverPortString);
         editor.apply();
         Toast.makeText(this, getString(R.string.udp_connection_message_label), Toast.LENGTH_SHORT).show();
 

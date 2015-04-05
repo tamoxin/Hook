@@ -3,9 +3,11 @@ package com.example.sweg.hook;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -18,6 +20,7 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -29,17 +32,24 @@ public class CanvasActivity extends ActionBarActivity {
     static final int takePhotoRequest = 0;
     static final int pickPhotoRequest = 1;
     static final int mediaTypeImage = 3;
-    protected Uri mediaUri = null;
-    protected String fileName;
-    protected String ip;
-    protected int port;
-    protected ImageView selectedImage;
+    Uri mediaUri = null;
+    String ip;
+    String port;
+    ImageView selectedImage;
+    SharedPreferences savedValues;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_canvas);
         selectedImage = (ImageView) findViewById(R.id.imageSelected);
+        savedValues = getSharedPreferences("portAndAddress", 0);
+        ip = savedValues.getString("ip", null);
+        port = savedValues.getString("port", null);
+        if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
     }
 
     @Override
@@ -137,7 +147,8 @@ public class CanvasActivity extends ActionBarActivity {
                             if (mediaUri == null) {
                                 //Display an error
                                 Toast.makeText(CanvasActivity.this,
-                                        R.string.error_external_store, Toast.LENGTH_LONG).show();
+                                        R.string.error_external_store,
+                                        Toast.LENGTH_LONG).show();
                             } else {
                                 takePhotoIntent.putExtra(MediaStore.EXTRA_OUTPUT, mediaUri);
                                 //The starActivityForResult starts the camera app and wait
@@ -182,10 +193,6 @@ public class CanvasActivity extends ActionBarActivity {
                             mediaFile = new File(path + "IMG_" + timestamp + ".jpg");
                         else
                             return null;
-
-                        Log.d("File name", mediaFile.getName());
-                        Log.d(TAG, "File: " + Uri.fromFile(mediaFile));
-                        fileName = mediaFile.getName();
                         //5. Return the file's URI
                         return Uri.fromFile(mediaFile);
                     }
@@ -195,10 +202,7 @@ public class CanvasActivity extends ActionBarActivity {
 
                 private boolean isExternalStorageAvailable(){
                     String state = Environment.getExternalStorageState();
-                    if (state.equals(Environment.MEDIA_MOUNTED))
-                        return true;
-                    else
-                        return false;
+                    return state.equals(Environment.MEDIA_MOUNTED);
                 }
             };
 
@@ -211,30 +215,32 @@ public class CanvasActivity extends ActionBarActivity {
         Toast.makeText(getApplicationContext(), R.string.menu_about_message_label, Toast.LENGTH_SHORT).show();
     }
 
-    public void shareViaUdpOnClick(MenuItem item) {
+    public void shareViaUdpOnClick(MenuItem item) throws FileNotFoundException {
 
         //Get information of the receiver
         Intent serverData = getIntent();
         ip = serverData.getStringExtra("ipServer");
-        port = serverData.getIntExtra("ipPort", -1);
+        port = serverData.getStringExtra("ipPort");
 
         if(mediaUri == null){
             Toast.makeText(getApplicationContext(), getString(R.string.uri_error_null), Toast.LENGTH_SHORT).show();
         }else{
 
-            if(port == -1 || ip.equals(null)){
-                Intent intent = new Intent(getApplicationContext(), IpAddressActivity.class);
+            if(port == null || ip == null){
+                Intent intent = new Intent(this, IpAddressActivity.class);
                 startActivity(intent);
             }else{
-                // Prepare the image to be sent
-                ImageProcessor processor = new ImageProcessor(fileName, mediaUri);
-                processor.imageToByteArray();
-
-                // Prepare the instructions to send the image
-                byte[] bytes = processor.getByteArray();
+                byte[] fileBytes = FileHelper.getByteArrayFromFile(this, mediaUri);
+                if(fileBytes == null) {
+                    Log.d("Error in fileBytes", "lol");
+                    return;
+                }else {
+                    fileBytes = FileHelper.reduceImageForUpload(fileBytes);
+                }
+                String fileName = FileHelper.getFileName(this, mediaUri);
 
                 // Send the image
-                ImageSender sender = new ImageSender(ip, port, bytes);
+                ImageSender sender = new ImageSender(ip, port, fileBytes, fileName);
                 sender.run();
 
                 Toast.makeText(getApplicationContext(),

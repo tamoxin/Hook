@@ -1,47 +1,56 @@
 package com.example.sweg.hook;
 
+import android.os.AsyncTask;
 import android.util.Log;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
-public class ImageSender implements Runnable{
+public class ImageSender {
+
     String ip;
     int port;
-    byte[] bytes;
+    byte[] fileBytes;
+    byte[] fileName;
 
-    public ImageSender(String ip, int port, byte[] bytes)
-    {
+    public ImageSender(String ip, String port, byte[] bytes, String fileName) {
         this.ip = ip;
-        this.port = port;
-        this.bytes = bytes;
-        Log.d("ip_Sender", this.ip);
-        Log.d("port_Sender", String.valueOf(this.port));
+        this.port = Integer.parseInt(port);
+        this.fileBytes = bytes;
+        this.fileName = fileName.getBytes();
     }
 
-    @Override
-    public void run()
-    {
-        try {
-            // Retrieve the ServerName
-            InetAddress serverAddress = InetAddress.getByName(ip);
+    public void run() {
+        BackgroundProcess run = new BackgroundProcess();
+        run.execute(this);
+    }
 
-            Log.d("UDP", "C: Connecting...");
+    private class BackgroundProcess extends AsyncTask<ImageSender, Void, Void>{
+
+        @Override
+        protected Void doInBackground(ImageSender... params) {
+            try {
+                // Retrieve the ServerName
+                InetAddress serverAddress = InetAddress.getByName(ip);
+
+                Log.d("UDP", "C: Connecting...");
                         /* Create new UDP-Socket */
-            DatagramSocket socket = new DatagramSocket();
+                DatagramSocket socket = new DatagramSocket();
+                DatagramPacket packetDirection = new DatagramPacket(fileBytes,
+                        fileBytes.length, serverAddress, port);
+                /* Send out the packet */
+                    socket.send(packetDirection);
+                Log.d("UDP", "C: Sending");
+            } catch (Exception e) {
+                Log.e("UDP", "C: Error", e);
+            }
+            return null;
+        }
 
-                        /* Create UDP-packet with
-                         * data & destination(url+port) */
-            DatagramPacket packetDirection = new DatagramPacket(bytes, bytes.length, serverAddress, port);
-            Log.d("UDP", "C: Sending: '" + new String(bytes) + "'");
-
-                        /* Send out the packet */
-            socket.send(packetDirection);
+        protected void onPostExecute(Void z){
             Log.d("UDP", "C: Sent.");
             Log.d("UDP", "C: Done.");
-        } catch (Exception e) {
-            Log.e("UDP", "C: Error", e);
         }
     }
 }
