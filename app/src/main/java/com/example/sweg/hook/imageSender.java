@@ -40,22 +40,35 @@ public class ImageSender {
                 DatagramSocket socket = new DatagramSocket();
                 DatagramPacket packetDirection;
 
-                for(int i = 0; i < 3; i ++){
+                boolean done = false;
+                int i = 0;
+                int bytes = 0;
+                while(!done){
                     switch(i){
                         case 0:
                             //Sends the length of the byte array of the image
                             packetDirection = new DatagramPacket(bytesLength.getBytes(),
                                     bytesLength.getBytes().length, serverAddress, port);
+                            i++;
                             break;
                         case 1:
                             //Sends the name of the image file
                             packetDirection = new DatagramPacket(fileName,
                                     fileName.length, serverAddress, port);
+                            i++;
                             break;
                         default:
                             //Sends the image
-                            packetDirection = new DatagramPacket(fileBytes,
-                                    fileBytes.length, serverAddress, port);
+                            byte[] buffer = new byte[65535];
+                            int c;
+                            for(c = bytes; c <= 65535; c++){
+                                buffer[c] = fileBytes[c];
+                            }
+                            bytes = c;
+                            packetDirection = new DatagramPacket(buffer,
+                                    buffer.length, serverAddress, port);
+                            if(bytes == 65535)
+                                done = true;
                             break;
                     }
                     /* Send out the packet */
