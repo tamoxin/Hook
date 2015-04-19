@@ -11,14 +11,14 @@ public class ImageSender {
     String ip;
     int port;
     byte[] fileBytes;
-    byte[] fileName;
+    String fileName;
     String bytesLength;
 
     public ImageSender(String ip, String port, byte[] bytes, String fileName) {
         this.ip = ip;
         this.port = Integer.parseInt(port);
         this.fileBytes = bytes;
-        this.fileName = fileName.getBytes();
+        this.fileName = fileName;
         this.bytesLength = "" + fileBytes.length;
     }
 
@@ -40,40 +40,50 @@ public class ImageSender {
                 DatagramSocket socket = new DatagramSocket();
                 DatagramPacket packetDirection;
 
-                boolean done = false;
-                int i = 0;
-                int bytes = 0;
-                while(!done){
+                int c = 0;
+                for(int i = 0; i < 3; i++){
                     switch(i){
                         case 0:
                             //Sends the length of the byte array of the image
                             packetDirection = new DatagramPacket(bytesLength.getBytes(),
                                     bytesLength.getBytes().length, serverAddress, port);
-                            i++;
+                            /* Send out the packet */
+                            socket.send(packetDirection);
+                            Log.d("UDP", "C: Sending");
                             break;
                         case 1:
                             //Sends the name of the image file
-                            packetDirection = new DatagramPacket(fileName,
-                                    fileName.length, serverAddress, port);
-                            i++;
+                            packetDirection = new DatagramPacket(fileName.getBytes(),
+                                    fileName.getBytes().length, serverAddress, port);
+                            /* Send out the packet */
+                            socket.send(packetDirection);
+                            Log.d("UDP", "C: Sending");
                             break;
                         default:
                             //Sends the image
-                            byte[] buffer = new byte[65535];
-                            int c;
-                            for(c = bytes; c <= 65535; c++){
-                                buffer[c] = fileBytes[c];
+                            Log.e("Image size", "" + fileBytes.length);
+                            byte[] buffer = new byte[1024];
+                            for(int aux = 0; aux < fileBytes.length; aux ++){
+                                buffer[c] = fileBytes[aux];
+                                c++;
+                                if(aux % 1023 == 0 || aux == (fileBytes.length - 1)){
+                                    packetDirection = new DatagramPacket(buffer,
+                                            buffer.length, serverAddress, port);
+                                    c = 0;
+
+                                    /* Send out the packet */
+                                    socket.send(packetDirection);
+                                    socket.close();
+                                    socket = new DatagramSocket();
+                                    Log.d("aux", "" + aux);
+                                    Log.d("UDP", "C: Sending");
+
+                                    for(int wait = 0; wait < 10000; wait ++){
+
+                                    }
+                                }
                             }
-                            bytes = c;
-                            packetDirection = new DatagramPacket(buffer,
-                                    buffer.length, serverAddress, port);
-                            if(bytes == 65535)
-                                done = true;
-                            break;
                     }
-                    /* Send out the packet */
-                    socket.send(packetDirection);
-                    Log.d("UDP", "C: Sending");
                 }
             } catch (Exception e) {
                 Log.e("UDP", "C: Error", e);

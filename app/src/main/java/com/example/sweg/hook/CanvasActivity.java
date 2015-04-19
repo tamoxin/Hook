@@ -217,19 +217,17 @@ public class CanvasActivity extends ActionBarActivity {
 
     public void shareViaUdpOnClick(MenuItem item) throws FileNotFoundException {
 
-        //Get information of the receiver
-        Intent serverData = getIntent();
-        ip = serverData.getStringExtra("ipServer");
-        port = serverData.getStringExtra("ipPort");
-
-        if(mediaUri == null){
+        if(mediaUri == null)
             Toast.makeText(getApplicationContext(), getString(R.string.uri_error_null), Toast.LENGTH_SHORT).show();
-        }else{
+        else{
 
+            //If the user tries to send the image via udp but have not defined the IP and Port.
             if(port == null || ip == null){
                 Intent intent = new Intent(this, IpAddressActivity.class);
                 startActivity(intent);
-            }else{
+            }
+            //If IP and Port are already defined.
+            else{
                 byte[] fileBytes = FileHelper.getByteArrayFromFile(this, mediaUri);
                 if(fileBytes == null) {
                     Log.d("Error in fileBytes", "lol");
